@@ -86,5 +86,5 @@
                 echo "Something went wrong...Try your order later";
 		        echo "<a href='memberpanel.php'>back</a>";	
             }
- 
+ //what a bad php
 ?>
