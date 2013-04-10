@@ -48,6 +48,19 @@ if(!empty($_POST['address'])){
 			if (mysql_query($sqlenter))
 			$error = 0;
 			else
+			   $error = 1;
+		}	
+	}
+	
+	$sql = 'select setMenuId from setmenu where restaurantid = "'.$restid.'"';
+    $result = mysql_query($sql);
+	while ($row1 = mysql_fetch_array($result)) {
+		$incoming[$row1[0]] = $_POST['S'.$row1[0].''];
+	    if ($incoming[$row1[0]] > 0) {
+		    $sqlenter = 'INSERT INTO `order`(`orderid`, `userid`, `restid`, `foodid`, `quantity`, `address`, `total`, `date`, `status`) VALUES ("'.$orderid.'", "'.$user.'", "'.$restid.'", "'.$row1[0].'", "'.$incoming[$row1[0]].'" , "'.$address.'", "'.$total.'", "'.$date.'", "waiting") ';
+			if (mysql_query($sqlenter)) 
+			   $error = 0;
+		    else
 			$error = 1;
 		}
 	}
