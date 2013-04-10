@@ -5,7 +5,7 @@ session_start();
 $district = $_GET['district'];
 $keywordstype = $_GET['keywordstype'];
 $keywords = $_GET['keyword'];
-
+$result=null;
 function imglink($rid,$rname){
 $sql = "SELECT rlogo from restaurants where rid = '$rid'";
 $result = mysql_query($sql);
@@ -14,7 +14,7 @@ $path = "temporary/";
 return "<img src='".$path.$rlogo."' alt='$rname' style='width:150px; height:150px'/>";
 }
 
-
+if(empty($keywords) && !empty($district) || !empty($keywords) && empty($district) || !empty($keywords) && !empty($district)){  /* changed */
 if($keywordstype == 'name'){
 	if(!empty($keywords) && !empty($district) && $district != 'all' ){
 		$sql = "SELECT * FROM restaurants WHERE district ='".$district."'and rname like '%".$keywords."%' ORDER BY rid";
@@ -22,22 +22,42 @@ if($keywordstype == 'name'){
 	else if(empty($keywords) && !empty($district) && $district != 'all'){
 		$sql = "SELECT * FROM restaurants WHERE district ='".$district."' ORDER BY district";
 	}
-	else if(!empty($keywords) && (empty($district) || $district != 'all')){
+	else if(!empty($keywords) && (empty($district))){  /*changed*/
 		$sql = "SELECT * FROM restaurants WHERE rname like '%".$keywords."%'ORDER BY rname"; 
 	}
+	else if(empty($keywords) && $district == 'all'){ /*changed*/
+    $sql = "select * from restaurants";
+  }
+  else if(!empty($keywords) && $district == 'all'){ /*changed*/
+    $sql = "select * from restaurants where rname like '%".$keywords."%'ORDER BY rname";
+  } 
 }else if($keywordstype == 'address'){
-	if(empty($keywords)){
-		$sql = "SELECT * FROM restaurnts ORDER BY district";
+	if(empty($keywords) && empty($district)){ /*changed*/
+		$sql = "SELECT * FROM restaurants ORDER BY district"; /*changed wrong spelling restaurants*/
 	}
+	else if(empty($keywords) && !empty($district)  && $district != 'all' ){ /*changed*/
+    $sql = "SELECT * FROM restaurants where district ='".$district."' ORDER BY district";   
+	} 
+	else if(!empty($keywords) && !empty($district)  && $district != 'all' ){ /*changed*/
+    $sql = "SELECT * FROM restaurants where district ='".$district."' and raddr like '%".$keywords."%' ORDER BY district";   
+	} 
 	else $sql = "SELECT * FROM restaurants WHERE raddr like '%".$keywords."%' ORDER BY rid";
 }else if($keywordstype == 'tel'){
-	if(empty($keywords)){
-		$sql = "SELECT * FROM restaurnts ORDER BY rtel";
+	if(empty($keywords) && empty($district)){  /*changed*/
+		$sql = "SELECT * FROM restaurants ORDER BY rtel";   /*changed wrong spelling restaurants*/
 	}
+	else if(empty($keywords) && !empty($district)  && $district != 'all' ){ /*changed*/
+    $sql = "SELECT * FROM restaurants where district ='".$district."' ORDER BY district";   
+	} 
+	else if(!empty($keywords) && !empty($district)  && $district != 'all' ){ /*changed*/
+    $sql = "SELECT * FROM restaurants where district ='".$district."' and rtel like '%".$keywords."%' ORDER BY district";   
+	} 
+	else
 	$sql = "SELECT * FROM restaurants WHERE rtel like '%".$keywords."%' ORDER BY rid";
 }
 
   $result = mysql_query($sql);
+  }
 ?>
   
 <html>
@@ -102,7 +122,7 @@ echo "<a href='login.html'>Login </a>|<a href='reg.php'> New Members </a>";
 <div id="recommendation">
 <h2>Search result(s)</h2>
 <?php
-if(mysql_num_rows($result) == 0){
+if($result==null || mysql_num_rows($result) == 0){
 	echo "Sorry，There are no results match。</br>";
 	echo "You may use the following method to search again<ul><li><a href=''>Advanced search</a></li></ul>";
 }
@@ -121,6 +141,7 @@ else{
 	$count++;
 }
 }
+
 ?>
 </div>
 </div>
