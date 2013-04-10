@@ -79,7 +79,7 @@ session_start();
 			$result = mysql_query($temp);
 			$row = mysql_fetch_row($result);
 			if ($new == $renew && $row[0] == md5($old)) {
-				$sql = "update acc set Password = '".$new."' where UserName = '".$id."'";
+				$sql = "update acc set Password = '".md5($new)."' where UserName = '".$id."'";
 				if (mysql_query($sql)) 
 					resultMessage("success");
 				else 	
