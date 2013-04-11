@@ -58,7 +58,11 @@ border-radius:21px 21px 0 0;">View Order</h2>
 	while ($rows = mysql_fetch_array($result)) {
 	    if ($user == $rows['userid']) {
 	    $sqlrest = "select rname from restaurants where rid = '".$rows['restid']."'";
-		$sqlfood = "select food from menu where foodid = '".$rows['foodid']."' and restaurantid = '".$rows['restid']."'";
+		if (preg_match('/^[FD]/',$rows['foodid']) == 1) {
+			$sqlfood = "select food from menu where foodid = '".$rows['foodid']."' and restaurantid = '".$rows['restid']."'";
+		} else {
+			$sqlfood = "select name from setmenu where setMenuId = '".$rows['foodid']."' and restaurantid = '".$rows['restid']."'";
+		}
 		$sqldistrict = "select district from restaurants where rid = '".$rows['restid']."'";
 		$sqlstatus = "select distinct`status` from `order` where `userid` = '".$user."'";
 		$resultt = mysql_query($sqlstatus);
