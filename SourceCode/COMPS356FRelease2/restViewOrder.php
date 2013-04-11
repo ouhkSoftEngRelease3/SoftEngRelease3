@@ -116,8 +116,8 @@ border-radius:21px 21px 0 0;">Restaurant View Order</h2>
 		    echo "<td>".$rest[$count]."</td><td>".$district[$count]."</td><td>".$food[$count]."</td><td>".$quantity[$count]."</td>";
 	        echo "</tr>";
 		    $count++;
-			
-	    } while ($count <= $max && $orderid[$count] == $startorder && $userrecord[$count] == $user);
+		
+		} while ($count <= $max && $orderid[$count] == $startorder);
 		if (strcmp($status[$statusCount-1], 'waiting')==0) {
 			echo "<tr>";
 			echo "<td>";
